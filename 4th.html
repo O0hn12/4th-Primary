@@ -1,0 +1,2533 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3rd year system</title>
+<link rel="icon" type="image/png" href="https://i.ibb.co/LDTWz9vs/Logo-HQ.png">
+<style>
+/* --- أساسيات الصفحة --- */
+body { 
+    font-family: "Cairo", sans-serif; 
+    margin: 0; 
+    background: #f5f6fa; 
+    color: #222; 
+}
+header { 
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center; 
+    background: #0078d7; 
+    color: white; 
+    padding: 15px; 
+    font-weight: bold; 
+}
+header button { 
+    background: transparent; 
+    border: none; 
+    color: white; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: 0.3s; 
+}
+header button.active { 
+    border-bottom: 3px solid #fff; 
+}
+main { 
+    padding: 20px; 
+}
+.section { 
+    display: none; 
+}
+.section.active { 
+    display: block; 
+}
+.card { 
+    background: white; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+    padding: 20px; 
+    margin-bottom: 20px; 
+    position: relative; 
+}
+label { 
+    display: block; 
+    margin-bottom: 6px; 
+    font-weight: bold; 
+}
+select, input[type="text"], input[type="number"] { 
+    width: 100%; 
+    padding: 10px; 
+    margin-bottom: 15px; 
+    border: 1px solid #ccc; 
+    border-radius: 10px; 
+    font-size: 15px; 
+}
+.radio-group { 
+    display: flex; 
+    gap: 15px; 
+    margin-bottom: 15px; 
+}
+.radio-group label { 
+    font-weight: normal; 
+}
+button.submit-btn { 
+    background: #0078d7; 
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    padding: 10px 20px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    transition: 0.3s; 
+}
+button.submit-btn:disabled { 
+    background: #aaa; 
+    cursor: not-allowed; 
+}
+.suggestions { 
+    position: absolute; 
+    background: white; 
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    width: calc(100% - 40px); 
+    max-height: 150px; 
+    overflow-y: auto; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
+    z-index: 10; 
+}
+.suggestions div { 
+    padding: 8px; 
+    cursor: pointer; 
+    transition: 0.2s; 
+}
+.suggestions div:hover { 
+    background: #0078d7; 
+    color: white; 
+}
+table { 
+    border-collapse: collapse; 
+    width: 100%; 
+    margin-top: 10px; 
+}
+table, th, td { 
+    border: 1px solid #ccc; 
+}
+th, td { 
+    padding: 8px; 
+    text-align: center; 
+}
+th { 
+    background: #0078d7; 
+    color: white; 
+}
+
+#attendanceSection, #reportsSection {
+  position: relative;
+  width: 100%;
+  display: none; /* كل قسم مخفي بشكل افتراضي */
+}
+
+#attendanceSection.active, #reportsSection.active {
+  display: block; /* القسم النشط يظهر */
+}
+
+    #mainApp { display: none; }
+
+@media (max-width:600px) { 
+    .card { padding: 15px; } 
+}
+    #gallerySection {
+  position: relative;
+  width: 100%;
+  display: none;
+}
+
+#gallerySection.active {
+  display: block;
+}
+    .gift-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center; /* ← دي اللي بتخليهم في النص */
+  margin-top: 10px;
+}
+
+.gift-card {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 15px;
+  width: 150px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.gift-card h4 {
+  margin: 0 0 5px;
+  font-size: 18px;
+}
+
+.gift-card p {
+  margin: 0 0 10px;
+  color: #555;
+}
+
+.gift-card input {
+  width: 60px;
+  padding: 8px; /* ← أكبر شوية */
+  font-size: 16px; /* ← أوضح للعين */
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  text-align: center;
+  outline: none; /* ← يشيل الحواف الزرقاء وقت الكتابة */
+}
+    .gift-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.gift-controls button {
+  background: #0078d7;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.gift-controls button:hover {
+  background: #005fa3;
+}
+
+    .custom-toast {
+  position: fixed;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 250px;
+  max-width: 400px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+.custom-toast.show {
+  bottom: 30px;
+  opacity: 1;
+}
+
+.custom-toast.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.custom-toast.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.custom-toast.warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.custom-toast .icon {
+  font-size: 18px;
+}
+</style>
+</head>
+<body>
+    
+  <!-- صفحة تسجيل الدخول -->
+<div id="loginSection" 
+     style="display:flex;align-items:center;justify-content:center;height:100vh;background:url('https://i.ibb.co/SD5Z9fwx/8190346.jpg') center center / cover no-repeat;position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;">
+  <div style="background:rgba(255,255,255,0.8);padding:30px 25px;border-radius:15px;box-shadow:0 4px 10px rgba(0,0,0,0.1);width:300px;text-align:center;">
+    <h2 style="margin-bottom:25px;color:#0078d7;">تسجيل الدخول</h2>
+
+    <input type="text" id="username" placeholder="اسم المستخدم" 
+  style="width:100%;padding:10px;margin-bottom:15px;border:1px solid #ccc;border-radius:10px;font-size:16px;text-align:center;background:rgba(255,255,255,0.6);color:#222;">
+
+    <input type="password" id="password" placeholder="كلمة المرور"
+  style="width:100%;padding:10px;margin-bottom:20px;border:1px solid #ccc;border-radius:10px;font-size:16px;text-align:center;background:rgba(255,255,255,0.6);color:#222;">
+
+    <button id="loginBtn"
+  style="width:100%;background:rgba(0,120,215,0.7);color:white;border:none;padding:10px;font-size:16px;border-radius:10px;cursor:pointer;transition:0.3s;">
+      دخول 🔐
+    </button>
+
+    <p id="loginError" style="margin-top:15px;color:red;display:none;">❌ اسم المستخدم أو كلمة المرور غير صحيحة</p>
+  </div>
+</div>
+
+  <!-- باقي الموقع -->
+  <div id="mainContent" 
+     style="display:none; position:relative; width:100%; min-height:100vh; background:#f5f6fa; z-index:1;">
+
+<header>
+<button id="attendanceTab" class="active">📋 التسجيل</button>
+<button id="reportsTab">📊 التقارير</button>
+<button id="addEditTab">✍🏻️ إضافة / تعديل</button>
+<button id="galleryTab">🎨 المعرض</button>
+</header>
+   
+<main>
+
+<section id="attendanceSection" class="section active">
+  <!-- تسجيل الحضور -->
+  <div class="card">
+    <h3>تسجيل الحضور والنوتة</h3>
+    <label>السنة</label><select id="yearSelect"></select>
+    <label>الشهر</label><select id="monthSelect"></select>
+    <label>التاريخ</label><select id="dateSelect"></select>
+    <label>الاسم</label>
+    <input type="text" id="nameInput" placeholder="اكتب الاسم...(لازم من الاقتراحات)">
+    <div id="nameSuggestions" class="suggestions" style="display:none;"></div>
+    <label>الحضور</label>
+    <div class="radio-group">
+      <label><input type="radio" name="attendance" value="حضر"> حضر</label>
+      <label><input type="radio" name="attendance" value="غاب"> غاب</label>
+    </div>
+    <label>جاب النوتة؟</label>
+    <div class="radio-group">
+      <label><input type="radio" name="notebook" value="نعم"> نعم</label>
+      <label><input type="radio" name="notebook" value="لا"> لا</label>
+    </div>
+    <button id="attendanceSubmit" class="submit-btn" disabled>إرسال</button>
+  </div>
+
+  <!-- تسجيل التفاعل -->
+  <div class="card">
+  <h3>تسجيل التفاعل</h3>
+  <label>الاسم</label>
+  <input type="text" id="interactionName" placeholder="اكتب الاسم...">
+  <div id="interactionSuggestions" class="suggestions" style="display:none;"></div>
+
+  <label>السنة</label>
+<select id="interactionYearSelect"></select>
+
+<label>الشهر</label>
+<select id="interactionMonthSelect"></select>
+
+<label>اليوم</label>
+<select id="interactionDateSelect"></select>
+
+  <label>نقاط التفاعل (0 - 5)</label>
+  <input type="number" id="interactionPoints" min="0" max="5">
+
+  <button id="interactionSubmit" class="submit-btn" disabled>إرسال</button>
+</div>
+
+    <!-- تسجيل الافتقاد -->
+<div class="card">
+  <h3>تسجيل الافتقاد</h3>
+
+  <label>التاريخ</label>
+  <select id="absenceYear"></select>
+  <select id="absenceMonth"></select>
+  <select id="absenceDate"></select>
+
+  <label>اسم الطفل</label>
+  <input type="text" id="absenceChildName" placeholder="اكتب اسم الطفل...">
+  <div id="absenceChildSuggestions" class="suggestions" style="display:none;"></div>
+
+  <label>اسم الخادم</label>
+  <select id="absenceStaff">
+    <option value="">اختر الخادم</option>
+    <option value="جوليا شنودة">جوليا شنودة</option>
+<option value="مريم ايمن">مريم ايمن</option>
+<option value="اوليفيا حنا">اوليفيا حنا</option>
+<option value="كريستى صبرى">كريستى صبرى</option>
+<option value="مرفت اشرف">مرفت اشرف</option>
+<option value="جاسنتا بولس">جاسنتا بولس</option>
+<option value="جيسيكا ملاك">جيسيكا ملاك</option>
+<option value="مريم نشأت">مريم نشأت</option>
+<option value="مريم ثروت">مريم ثروت</option>
+<option value="فيرونا ماهر">فيرونا ماهر</option>
+<option value="حنان فيكتور">حنان فيكتور</option>
+<option value="منار نصيف">منار نصيف</option>
+<option value="مريم مرقس">مريم مرقس</option>
+<option value="هيلين جاد">هيلين جاد</option>
+  </select>
+
+  <label>نوع الافتقاد</label>
+  <select id="absenceType">
+    <option value="منزل">منزل</option>
+    <option value="تيليفون">تيليفون</option>
+  </select>
+
+  <label>الملاحظات</label>
+  <textarea id="absenceNotes" placeholder="اكتب الملاحظات هنا..." rows="3"></textarea>
+
+  <button id="absenceSubmit" class="submit-btn" disabled>إرسال</button>
+</div>
+
+    <div class="card">
+  <h3>🎁 تسجيل هدية عيد ميلاد</h3>
+
+  <label>الاسم</label>
+  <input type="text" id="giftName" placeholder="اكتب الاسم...">
+  <div id="giftSuggestions" class="suggestions" style="display:none;"></div>
+
+  <label>هل استلم هدية؟</label>
+  <select id="giftReceived">
+    <option value="">اختر</option>
+    <option value="نعم">نعم</option>
+    <option value="لا">لا</option>
+  </select>
+
+  <label>تاريخ الاستلام</label>
+  <select id="giftYear"></select>
+  <select id="giftMonth"></select>
+  <select id="giftDay"></select>
+
+  <label>اسم الخادم</label>
+  <select id="giftStaff">
+    <option value="">اختر الخادم</option>
+    <option value="جوليا شنودة">جوليا شنودة</option>
+<option value="مريم ايمن">مريم ايمن</option>
+<option value="اوليفيا حنا">اوليفيا حنا</option>
+<option value="كريستى صبرى">كريستى صبرى</option>
+<option value="مرفت اشرف">مرفت اشرف</option>
+<option value="جاسنتا بولس">جاسنتا بولس</option>
+<option value="جيسيكا ملاك">جيسيكا ملاك</option>
+<option value="مريم نشأت">مريم نشأت</option>
+<option value="مريم ثروت">مريم ثروت</option>
+<option value="فيرونا ماهر">فيرونا ماهر</option>
+<option value="حنان فيكتور">حنان فيكتور</option>
+<option value="منار نصيف">منار نصيف</option>
+<option value="مريم مرقس">مريم مرقس</option>
+<option value="هيلين جاد">هيلين جاد</option>
+  </select>
+
+  <button id="giftSubmit" class="submit-btn" disabled>🎉 تسجيل الهدية</button>
+</div>
+
+    <h3>🧾 تسجيل Minus</h3>
+<label>اسم الطفل:</label>
+<input id="minusName" type="text" placeholder="اكتب الاسم...">
+<div id="minusSuggestions" class="suggestions" style="display:none;"></div>
+
+<label>التاريخ:</label>
+<select id="minusYear"></select>
+<select id="minusMonth"></select>
+<select id="minusDate"></select><br>
+
+<label>قيمة Minus:</label>
+<input id="minusValue" type="text" placeholder="اكتب القيمة..."><br>
+
+<button id="saveMinus" class="submit-btn" disabled> حفظ Minus</button>
+<p id="minusStatus"></p>
+
+</section>
+
+<section id="reportsSection" class="section">
+  <!-- أعياد الميلاد -->
+  <div class="card">
+    <h3>أعياد ميلاد الأطفال</h3>
+    <label>اختر الشهر</label><select id="birthdayMonth">
+  <option value="1">يناير</option>
+  <option value="2">فبراير</option>
+  <option value="3">مارس</option>
+  <option value="4">أبريل</option>
+  <option value="5">مايو</option>
+  <option value="6">يونيو</option>
+  <option value="7">يوليو</option>
+  <option value="8">أغسطس</option>
+  <option value="9">سبتمبر</option>
+  <option value="10">أكتوبر</option>
+  <option value="11">نوفمبر</option>
+  <option value="12">ديسمبر</option>
+</select>
+    <button id="birthdayShow" class="submit-btn">عرض الأسماء</button>
+    <div id="birthdayResult"></div>
+  </div>
+
+  <!-- تقرير الحضور -->
+  <div class="card">
+    <h3>تقرير الحضور</h3>
+    <label>السنة</label><select id="reportYear"></select>
+    <label>الشهر</label><select id="reportMonth"></select>
+    <label>التاريخ</label><select id="reportDate"></select>
+    <button id="showCount" class="submit-btn">عدد الحضور</button>
+    <button id="showNames" class="submit-btn">عرض الأسماء</button>
+    <div id="attendanceReportResult"></div>
+  </div>
+
+  <!-- بيانات الطفل -->
+  <div class="card">
+    <h3>بيانات الطفل</h3>
+    <label>الاسم</label><input type="text" id="childInfoName" placeholder="اكتب الاسم...">
+    <div id="childInfoSuggestions" class="suggestions" style="display:none;"></div>
+    <button id="showChildInfo" class="submit-btn">عرض البيانات</button>
+    <div id="childInfoResult"></div>
+  </div>
+
+  <!-- حضور الطفل في الشهر -->
+  <div class="card">
+    <h3>حضور الطفل في الشهر</h3>
+    <label>الاسم</label><input type="text" id="childAttendanceName" placeholder="اكتب الاسم...">
+    <div id="childAttendanceSuggestions" class="suggestions" style="display:none;"></div>
+    <label>السنة</label><select id="childAttendanceYear"></select>
+    <label>الشهر</label><select id="childAttendanceMonth"></select>
+    <button id="showChildAttendance" class="submit-btn">عرض الحضور</button>
+    <div id="childAttendanceResult"></div>
+  </div>
+
+  <!-- نقاط التفاعل الشهرية -->
+  <div class="card">
+    <h3>نقاط التفاعل الشهرية</h3>
+    <label>الاسم</label><input type="text" id="interactionReportName" placeholder="اكتب الاسم...">
+    <div id="interactionReportSuggestions" class="suggestions" style="display:none;"></div>
+    <label>السنة</label><select id="interactionReportYear"></select>
+    <label>الشهر</label><select id="interactionReportMonth"></select>
+    <button id="showInteractionReport" class="submit-btn">عرض نقاط التفاعل</button>
+    <div id="interactionReportResult"></div>
+  </div>
+
+    <!-- تقرير الافتقاد -->
+<div class="card">
+  <h3>تقرير الافتقاد</h3>
+  <label>اختر الطفل</label>
+  <input type="text" id="absenceReportChildName" placeholder="اكتب اسم الطفل...">
+  <div id="absenceReportSuggestions" class="suggestions" style="display:none;"></div>
+
+  <label>اختر السنة</label>
+  <select id="absenceReportYear"></select>
+
+  <label>اختر الشهر</label>
+  <select id="absenceReportMonth"></select>
+
+  <button id="showAbsenceReport" class="submit-btn">عرض تقرير الافتقاد</button>
+  <div id="absenceReportResult"></div>
+</div>
+
+    <div class="card">
+  <h3>🎁 تقرير هدايا عيد الميلاد</h3>
+  <label>الاسم</label>
+  <input type="text" id="giftReportName" placeholder="اكتب الاسم...">
+  <div id="giftReportSuggestions" class="suggestions" style="display:none;"></div>
+
+  <label>السنة</label>
+  <select id="giftReportYear"></select>
+
+  <button id="showGiftReport" class="submit-btn">عرض التقرير</button>
+  <div id="giftReportResult"></div>
+</div>
+
+    <div class="card">
+  <h3>📞 تقرير افتقاد خدام</h3>
+
+  <label>اختر اسم الخادم</label>
+  <select id="staffReportName">
+    <option value="">اختر الخادم</option>
+    <option value="جوليا شنودة">جوليا شنودة</option>
+    <option value="مريم ايمن">مريم ايمن</option>
+    <option value="اوليفيا حنا">اوليفيا حنا</option>
+    <option value="كريستى صبرى">كريستى صبرى</option>
+    <option value="مرفت اشرف">مرفت اشرف</option>
+    <option value="جاسنتا بولس">جاسنتا بولس</option>
+    <option value="جيسيكا ملاك">جيسيكا ملاك</option>
+    <option value="مريم نشأت">مريم نشأت</option>
+    <option value="مريم ثروت">مريم ثروت</option>
+    <option value="فيرونا ماهر">فيرونا ماهر</option>
+    <option value="حنان فيكتور">حنان فيكتور</option>
+    <option value="منار نصيف">منار نصيف</option>
+    <option value="مريم مرقس">مريم مرقس</option>
+    <option value="هيلين جاد">هيلين جاد</option>
+  </select>
+
+  <label>السنة</label>
+  <select id="staffReportYear"></select>
+
+  <label>الشهر</label>
+  <select id="staffReportMonth"></select>
+
+  <button id="showStaffReport" class="submit-btn">عرض التقرير</button>
+  <div id="staffReportResult"></div>
+</div>
+
+<div class="card">
+  <h3>📊 تقرير كل الدرجات</h3>
+  <button id="showAllScoresBtn" class="submit-btn">عرض كل الدرجات</button>
+  <div id="allScoresResult" style="margin-top:10px;"></div>
+</div>
+
+</section>
+
+    <section id="addEditSection" class="section">
+
+  <h2>✍🏻️ إضافة / تعديل بيانات طفل</h2>
+
+  <div id="addEditForm" class="child-form">
+    <label>الاسم:</label>
+    <input id="ae_name" type="text" placeholder="ادخل الاسم" list="allNamesList"><br>
+
+    <label>الفرقة:</label>
+<input id="ae_class" type="text" placeholder="مثلاً: ثالثة ابتدائي"><br>
+
+<label>المجموعة:</label>
+<select id="ae_group">
+  <option value="البابا كيرلس">البابا كيرلس</option>
+  <option value="مارمينا">مارمينا</option>
+  <option value="ماما العدرا">ماما العدرا</option>
+</select><br>
+
+  <label>السنة:</label>
+<select id="ae_year"></select><br>
+
+<label>الشهر:</label>
+<select id="ae_month"></select><br>
+
+<label>اليوم:</label>
+<select id="ae_day"></select><br>
+
+    <label>المدرسة:</label>
+    <input id="ae_school" type="text"><br>
+
+    <label>السنة الدراسية:</label>
+    <input id="ae_schoolYear" type="text"><br>
+
+    <label>أب الاعتراف:</label>
+    <input id="ae_confession" type="text"><br>
+
+    <label>المنطقة:</label>
+    <input id="ae_area" type="text"><br>
+
+    <label>الشارع:</label>
+    <input id="ae_street" type="text"><br>
+
+    <label>بجوار / أعلى / أمام:</label>
+    <input id="ae_near" type="text"><br>
+
+    <label>رقم المنزل:</label>
+    <input id="ae_homeNum" type="text"><br>
+
+    <label>تليفون المنزل:</label>
+    <input id="ae_homePhone" type="text"><br>
+
+    <label>تليفون الأب:</label>
+    <input id="ae_fatherPhone" type="text"><br>
+
+    <label>عمل الأب:</label>
+    <input id="ae_fatherJob" type="text"><br>
+
+    <label>تليفون الأم:</label>
+    <input id="ae_motherPhone" type="text"><br>
+
+    <label>عمل الأم:</label>
+    <input id="ae_motherJob" type="text"><br>
+
+      <!-- الإخوة -->
+<label>اسم الأخ 1:</label>
+<input id="ae_brother1" type="text"><br>
+<label>سن الأخ 1:</label>
+<input id="ae_brother1Age" type="text"><br>
+
+<label>اسم الأخ 2:</label>
+<input id="ae_brother2" type="text"><br>
+<label>سن الأخ 2:</label>
+<input id="ae_brother2Age" type="text"><br>
+
+<label>اسم الأخ 3:</label>
+<input id="ae_brother3" type="text"><br>
+<label>سن الأخ 3:</label>
+<input id="ae_brother3Age" type="text"><br>
+
+<label>اسم الأخ 4:</label>
+<input id="ae_brother4" type="text"><br>
+<label>سن الأخ 4:</label>
+<input id="ae_brother4Age" type="text"><br>
+
+<label>اسم الأخ 5:</label>
+<input id="ae_brother5" type="text"><br>
+<label>سن الأخ 5:</label>
+<input id="ae_brother5Age" type="text"><br>
+
+<!-- السمات -->
+<label>لغات الحب:</label>
+<input id="ae_loveLangs" type="text"><br>
+
+<label>السمات الشخصية:</label>
+<input id="ae_traits" type="text"><br>
+
+<label>المواهب:</label>
+<input id="ae_talents" type="text"><br>
+
+<label>أفضل الطرق للتعامل معه:</label>
+<input id="ae_bestWays" type="text"><br>
+
+<label>المشكلات:</label>
+<input id="ae_problems" type="text"><br>
+
+    <label>رابط الصورة (Google Drive):</label>
+    <input id="ae_photo" type="text" placeholder="ضع رابط الصورة هنا"><br>
+
+    <button id="saveChildBtn">💾 حفظ البيانات</button>
+  </div>
+
+  <div id="addEditResult" style="margin-top:15px; font-weight:bold;"></div>
+
+        <div class="card">
+  <h3>📋 تعديل / إضافة حضور</h3>
+  <label>الاسم:</label><input id="ae_att_name" type="text"><br>
+  <div id="ae_att_suggestions" class="suggestions" style="display:none;"></div>
+  <label>السنة:</label><select id="ae_att_year"></select>
+  <label>الشهر:</label><select id="ae_att_month"></select>
+  <label>اليوم:</label><select id="ae_att_day"></select>
+  <label>الحضور:</label>
+  <div class="radio-group">
+    <label><input type="radio" name="ae_att_status" value="حضر"> حضر</label>
+    <label><input type="radio" name="ae_att_status" value="غاب"> غاب</label>
+  </div>
+  <label>جاب النوتة؟</label>
+  <div class="radio-group">
+    <label><input type="radio" name="ae_att_notebook" value="نعم"> نعم</label>
+    <label><input type="radio" name="ae_att_notebook" value="لا"> لا</label>
+  </div>
+  <button id="ae_att_btn" class="submit-btn">💾 حفظ الحضور</button>
+</div>
+
+<div class="card">
+  <h3>✨ تعديل / إضافة تفاعل</h3>
+  <label>الاسم:</label><input id="ae_interact_name" type="text"><br>
+    <div id="ae_interact_suggestions" class="suggestions" style="display:none;"></div>
+  <label>السنة:</label><select id="ae_interact_year"></select>
+  <label>الشهر:</label><select id="ae_interact_month"></select>
+  <label>اليوم:</label><select id="ae_interact_day"></select>
+  <label>نقاط التفاعل (0 - 5):</label><input id="ae_interact_points" type="number" min="0" max="5"><br>
+  <button id="ae_interact_btn" class="submit-btn">💾 حفظ التفاعل</button>
+</div>
+
+<div class="card">
+  <h3>📞 تعديل / إضافة افتقاد</h3>
+  <label>الاسم:</label><input id="ae_abs_name" type="text"><br>
+    <div id="ae_abs_suggestions" class="suggestions" style="display:none;"></div>
+  <label>السنة:</label>
+<select id="ae_abs_year"></select><br>
+
+<label>الشهر:</label>
+<select id="ae_abs_month"></select><br>
+
+<label>اليوم:</label>
+<select id="ae_abs_day"></select><br>
+
+  <label>نوع الافتقاد:</label>
+  <select id="ae_abs_type">
+    <option value="منزل">منزل</option>
+    <option value="تيليفون">تيليفون</option>
+  </select>
+  <label>اسم الخادم:</label>
+  <select id="ae_abs_staff">
+    <option value="جوليا شنودة">جوليا شنودة</option>
+<option value="مريم ايمن">مريم ايمن</option>
+<option value="اوليفيا حنا">اوليفيا حنا</option>
+<option value="كريستى صبرى">كريستى صبرى</option>
+<option value="مرفت اشرف">مرفت اشرف</option>
+<option value="جاسنتا بولس">جاسنتا بولس</option>
+<option value="جيسيكا ملاك">جيسيكا ملاك</option>
+<option value="مريم نشأت">مريم نشأت</option>
+<option value="مريم ثروت">مريم ثروت</option>
+<option value="فيرونا ماهر">فيرونا ماهر</option>
+<option value="حنان فيكتور">حنان فيكتور</option>
+<option value="منار نصيف">منار نصيف</option>
+<option value="مريم مرقس">مريم مرقس</option>
+<option value="هيلين جاد">هيلين جاد</option>
+  </select>
+  <label>ملاحظات:</label><textarea id="ae_abs_notes" rows="3"></textarea>
+  <button id="ae_abs_btn" class="submit-btn">💾 حفظ الافتقاد</button>
+</div>
+
+        <div class="card">
+  <h3>🛠️ تعديل بيانات مختارة لطفل</h3>
+
+  <label>الاسم:</label>
+  <input type="text" id="editChildName" placeholder="اكتب الاسم..." />
+  <div id="editChildSuggestions" class="suggestions" style="display:none;"></div>
+
+  <label>اختر البيانات المراد تعديلها:</label>
+  <select id="editField">
+    <option value="">اختر الحقل</option>
+    <option value="class">الفرقة</option>
+    <option value="day">اليوم</option>
+    <option value="month">الشهر</option>
+    <option value="year">السنة</option>
+    <option value="school">المدرسة</option>
+    <option value="schoolYear">السنة الدراسية</option>
+    <option value="confession">أب الاعتراف</option>
+    <option value="area">المنطقة</option>
+    <option value="street">الشارع</option>
+    <option value="near">بجوار / أعلى / أمام</option>
+    <option value="homeNum">رقم المنزل</option>
+    <option value="homePhone">تليفون المنزل</option>
+    <option value="fatherPhone">تليفون الأب</option>
+    <option value="fatherJob">عمل الأب</option>
+    <option value="motherPhone">تليفون الأم</option>
+    <option value="motherJob">عمل الأم</option>
+    <option value="brother1">اسم الأخ 1</option>
+    <option value="brother1Age">سن الأخ 1</option>
+    <option value="brother2">اسم الأخ 2</option>
+    <option value="brother2Age">سن الأخ 2</option>
+    <option value="brother3">اسم الأخ 3</option>
+    <option value="brother3Age">سن الأخ 3</option>
+    <option value="brother4">اسم الأخ 4</option>
+    <option value="brother4Age">سن الأخ 4</option>
+    <option value="brother5">اسم الأخ 5</option>
+    <option value="brother5Age">سن الأخ 5</option>
+    <option value="loveLangs">لغات الحب</option>
+    <option value="traits">السمات الشخصية</option>
+    <option value="talents">المواهب</option>
+    <option value="bestWays">أفضل الطرق للتعامل معه</option>
+    <option value="problems">المشكلات</option>
+    <option value="photo">رابط الصورة</option>
+    <option value="group">كود المجموعة (group)</option>
+  </select>
+
+  <label>القيمة الجديدة:</label>
+  <input type="text" id="editNewValue" placeholder="اكتب التعديل هنا..." />
+
+  <button id="editChildBtn" class="submit-btn">💾 حفظ التعديل</button>
+</div>
+        </section>
+
+<section id="gallerySection" class="section">
+  <div class="card">
+    <h3>🎁 معرض الهدايا</h3>
+
+    <label>اختر السنة</label>
+<select id="galleryYearSelect"></select>
+
+<label>اختر الشهر</label>
+<select id="galleryMonthSelect"></select>
+
+    <label>اسم الطفل</label>
+    <input type="text" id="galleryChildName" placeholder="اكتب الاسم...">
+    <div id="gallerySuggestions" class="suggestions" style="display:none;"></div>
+
+    <button id="galleryCheckBtn" class="submit-btn">عرض النقاط</button>
+
+    <div id="galleryResult" style="margin-top:10px;font-weight:bold;"></div>
+    <hr>
+
+    <h4>اختر الهدايا</h4>
+    <div id="giftOptions" class="gift-grid">
+  <div class="gift-card">
+    <h4>🎮 لعبة</h4>
+    <p>4 نقاط</p>
+    <div class="gift-controls">
+      <button class="gift-minus">−</button>
+      <input type="number" min="0" value="0" data-points="4" class="giftQty">
+      <button class="gift-plus">+</button>
+    </div>
+  </div>
+
+  <div class="gift-card">
+    <h4>🎨 كراسة رسم</h4>
+    <p>3 نقاط</p>
+    <div class="gift-controls">
+      <button class="gift-minus">−</button>
+      <input type="number" min="0" value="0" data-points="3" class="giftQty">
+      <button class="gift-plus">+</button>
+    </div>
+  </div>
+
+  <div class="gift-card">
+    <h4>🖍️ ألوان</h4>
+    <p>2 نقاط</p>
+    <div class="gift-controls">
+      <button class="gift-minus">−</button>
+      <input type="number" min="0" value="0" data-points="2" class="giftQty">
+      <button class="gift-plus">+</button>
+    </div>
+  </div>
+
+  <div class="gift-card">
+    <h4>✨ ستيكرات</h4>
+    <p>1 نقطة</p>
+    <div class="gift-controls">
+      <button class="gift-minus">−</button>
+      <input type="number" min="0" value="0" data-points="1" class="giftQty">
+      <button class="gift-plus">+</button>
+    </div>
+  </div>
+
+  <div class="gift-card">
+    <h4>📘 كتاب صغير</h4>
+    <p>5 نقاط</p>
+    <div class="gift-controls">
+      <button class="gift-minus">−</button>
+      <input type="number" min="0" value="0" data-points="5" class="giftQty">
+      <button class="gift-plus">+</button>
+    </div>
+  </div>
+</div>
+
+    <p id="giftTotal" style="margin-top:10px;">إجمالي نقاط الهدايا: 0</p>
+
+    <button id="gallerySubmitBtn" class="submit-btn" disabled>تسجيل الهدايا</button>
+  </div>
+
+    <div class="card">
+  <h3>🔍 البحث عن هدايا المعرض</h3>
+
+  <label>اسم الطفل</label>
+  <input type="text" id="galleryGiftSearchName" placeholder="اكتب الاسم...">
+  <div id="galleryGiftSearchSuggestions" class="suggestions" style="display:none;"></div>
+
+  <button id="galleryGiftSearchBtn" class="submit-btn">بحث</button>
+
+  <div id="galleryGiftSearchResult" style="margin-top:10px;"></div>
+</div>
+
+</section>
+</main>
+</div>
+<script>
+    let userGroups = [];
+const apiURL="https://3rd.johnmamdouh777.workers.dev/";
+let galleryNames = [];
+const currentYear = new Date().getFullYear();
+const months=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+fillYearSelect(document.getElementById("absenceYear"));
+fillMonthSelect(document.getElementById("absenceMonth"));
+fillYearSelect(document.getElementById("absenceReportYear"));
+fillYearSelect(document.getElementById("giftReportYear"), 2020, currentYear + 1);
+
+// --- التنقل بين الأقسام ---
+function activateTab(tabId, sectionId) {
+  document.querySelectorAll("header button").forEach(btn => btn.classList.remove("active"));
+  document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+
+  document.getElementById(tabId).classList.add("active");
+  document.getElementById(sectionId).classList.add("active");
+}
+
+document.getElementById("attendanceTab").onclick = () => activateTab("attendanceTab", "attendanceSection");
+document.getElementById("reportsTab").onclick = () => activateTab("reportsTab", "reportsSection");
+document.getElementById("addEditTab").onclick = () => activateTab("addEditTab", "addEditSection");
+document.getElementById("galleryTab").onclick = () => activateTab("galleryTab", "gallerySection");
+    
+// --- تعبئة السنوات والشهور ---
+function fillYearSelect(sel, start = currentYear - 1, end = currentYear + 1){
+  if (!sel) return;
+  sel.innerHTML = "";
+  for (let y = start; y <= end; y++) {
+    const opt = document.createElement("option");
+    opt.value = y;
+    opt.textContent = y;
+    sel.appendChild(opt);
+  }
+}
+
+fillYearSelect(document.getElementById("yearSelect"));
+fillYearSelect(document.getElementById("reportYear"));
+fillYearSelect(document.getElementById("childAttendanceYear"));
+fillYearSelect(document.getElementById("interactionReportYear"));
+fillYearSelect(document.getElementById("absenceReportYear"));
+fillYearSelect(document.getElementById("giftReportYear"), 2020, currentYear + 1);
+fillYearSelect(document.getElementById("staffReportYear"));
+fillMonthSelect(document.getElementById("staffReportMonth"));
+fillMonthSelect(document.getElementById("galleryMonthSelect"));
+
+function fillMonthSelect(sel){
+  if(!sel) return;
+  sel.innerHTML = ""; // إزالة أي خيارات موجودة
+  months.forEach((m,i)=>{
+    const opt = document.createElement("option");
+    opt.value = i+1;
+    opt.textContent = m;
+    sel.appendChild(opt);
+  });
+}
+
+
+fillMonthSelect(document.getElementById("monthSelect"));
+fillMonthSelect(document.getElementById("reportMonth"));
+fillMonthSelect(document.getElementById("childAttendanceMonth"));
+fillMonthSelect(document.getElementById("interactionReportMonth"));
+fillMonthSelect(document.getElementById("birthdayMonth"));
+fillMonthSelect(document.getElementById("absenceReportMonth"));
+    
+    const minusYear = document.getElementById("minusYear");
+const minusMonth = document.getElementById("minusMonth");
+const minusDate = document.getElementById("minusDate");
+
+    fillYearSelect(minusYear);
+fillMonthSelect(minusMonth);
+    fillFridays(minusYear, minusMonth, minusDate);
+    minusYear.onchange = () => {
+  fillFridays(minusYear, minusMonth, minusDate);
+};
+
+minusMonth.onchange = () => {
+  fillFridays(minusYear, minusMonth, minusDate);
+};
+    
+    fillYearSelect(document.getElementById("giftYear"));
+fillMonthSelect(document.getElementById("giftMonth"));
+fillAllDays(document.getElementById("giftYear"), document.getElementById("giftMonth"), document.getElementById("giftDay"));
+
+document.getElementById("giftYear").onchange = () => {
+  fillAllDays(document.getElementById("giftYear"), document.getElementById("giftMonth"), document.getElementById("giftDay"));
+};
+document.getElementById("giftMonth").onchange = () => {
+  fillAllDays(document.getElementById("giftYear"), document.getElementById("giftMonth"), document.getElementById("giftDay"));
+};
+
+ fillYearSelect(document.getElementById("galleryYearSelect"), 2020, new Date().getFullYear() + 1);
+
+// --- تعبئة أيام الجمعة ---
+function fillFridays(yearSel, monthSel, dateSel){
+  if (!yearSel || !monthSel || !dateSel) return; // حماية من null
+  dateSel.innerHTML = "";
+  const year = +yearSel.value;
+  const month = +monthSel.value - 1;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for(let d = 1; d <= daysInMonth; d++){
+    const date = new Date(year, month, d);
+    if(date.getDay() === 5){
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = `${d}/${month + 1}/${year}`;
+      dateSel.appendChild(opt);
+    }
+  }
+}
+
+fillFridays(document.getElementById("yearSelect"), document.getElementById("monthSelect"), document.getElementById("dateSelect"));
+document.getElementById("yearSelect").onchange = () => fillFridays(document.getElementById("yearSelect"), document.getElementById("monthSelect"), document.getElementById("dateSelect"));
+document.getElementById("monthSelect").onchange = () => fillFridays(document.getElementById("yearSelect"), document.getElementById("monthSelect"), document.getElementById("dateSelect"));
+
+
+// --- تحميل الأسماء ---
+let allNames = [];
+
+async function loadNames(groups = userGroups){
+  if (!groups || groups.length === 0) return;
+  try{
+    const res = await fetch(apiURL+"?type=names&groups=" + groups.join(","));
+    const data = await res.json();
+    allNames = Array.isArray(data) ? data : (data.names || []);
+      console.log("✅ allNames loaded:", allNames);
+  } catch(err){ 
+    console.warn(err); 
+  }
+}
+
+const nameInput = document.getElementById("nameInput");
+const interactionName = document.getElementById("interactionName");
+const childInfoName = document.getElementById("childInfoName");
+const childAttendanceName = document.getElementById("childAttendanceName");
+const interactionReportName = document.getElementById("interactionReportName");
+
+// اختر مكان تنفيذ التحميل فقط مرة:
+async function initAttendance(){
+  await loadNames(); // ⬅️ ضروري جدًا تحميل الأسماء هنا
+
+  setupSuggestions(nameInput, document.getElementById("nameSuggestions"));
+  setupSuggestions(interactionName, document.getElementById("interactionSuggestions"));
+  setupSuggestions(childInfoName, document.getElementById("childInfoSuggestions"));
+  setupSuggestions(childAttendanceName, document.getElementById("childAttendanceSuggestions"));
+  setupSuggestions(interactionReportName, document.getElementById("interactionReportSuggestions"));
+  setupSuggestions(document.getElementById("absenceChildName"), document.getElementById("absenceChildSuggestions"));
+  setupSuggestions(document.getElementById("absenceReportChildName"), document.getElementById("absenceReportSuggestions"));
+  setupSuggestions(document.getElementById("giftName"), document.getElementById("giftSuggestions"));
+  setupSuggestions(document.getElementById("giftReportName"), document.getElementById("giftReportSuggestions"));
+  setupSuggestions(document.getElementById("editChildName"), document.getElementById("editChildSuggestions"));
+  setupSuggestions(document.getElementById("galleryChildName"), document.getElementById("galleryChildSuggestions"));
+  checkAttendanceReady();
+}
+
+initAttendance();
+
+// --- الاقتراحات ---
+function setupSuggestions(inputEl, suggestionsEl){
+  if (!inputEl || !suggestionsEl) return;
+inputEl.addEventListener("input", () => {
+    const q=inputEl.value.trim().toLowerCase();
+    if(!q) return suggestionsEl.style.display="none";
+    const filtered=allNames.filter(n=>n.toLowerCase().includes(q)).slice(0,10);
+    if(filtered.length===0){ suggestionsEl.style.display="none"; return; }
+    suggestionsEl.innerHTML="";
+    filtered.forEach(name=>{
+      const div=document.createElement("div");
+      div.textContent=name;
+      div.onclick=()=>{
+        inputEl.value=name;
+        suggestionsEl.style.display="none";
+        inputEl.dispatchEvent(new Event("input"));
+      };
+      suggestionsEl.appendChild(div);
+    });
+    suggestionsEl.style.display="block";
+  });
+  document.addEventListener("click",(e)=>{
+    if (
+  inputEl && suggestionsEl &&
+  !inputEl.contains(e.target) &&
+  !suggestionsEl.contains(e.target)
+)
+      suggestionsEl.style.display="none";
+  });
+}
+
+setupSuggestions(document.getElementById("nameInput"),document.getElementById("nameSuggestions"));
+setupSuggestions(document.getElementById("interactionName"),document.getElementById("interactionSuggestions"));
+setupSuggestions(document.getElementById("childInfoName"),document.getElementById("childInfoSuggestions"));
+setupSuggestions(document.getElementById("childAttendanceName"),document.getElementById("childAttendanceSuggestions"));
+setupSuggestions(document.getElementById("interactionReportName"),document.getElementById("interactionReportSuggestions"));
+setupSuggestions(document.getElementById("minusName"), document.getElementById("minusSuggestions"));
+setupSuggestions(document.getElementById("galleryName"), document.getElementById("gallerySuggestions"));
+setupSuggestions(
+  document.getElementById("ae_att_name"),
+  document.getElementById("ae_att_suggestions")
+);
+setupSuggestions(
+  document.getElementById("ae_interact_name"),
+  document.getElementById("ae_interact_suggestions")
+);
+setupSuggestions(
+  document.getElementById("ae_abs_name"),
+  document.getElementById("ae_abs_suggestions")
+);
+    setupSuggestions(
+  document.getElementById("galleryChildName"),
+  document.getElementById("gallerySuggestions")
+);
+
+    function showMessage(msg, type = "success") {
+  const box = document.createElement("div");
+  box.className = `custom-toast ${type}`;
+  box.innerHTML = `
+    <span class="icon">${type === "success" ? "✅" : type === "error" ? "❌" : "⚠️"}</span>
+    <span class="text">${msg}</span>
+  `;
+
+  document.body.appendChild(box);
+
+  // حركة دخول
+  setTimeout(() => box.classList.add("show"), 50);
+
+  // إزالة بعد 3 ثواني
+  setTimeout(() => {
+    box.classList.remove("show");
+    setTimeout(() => box.remove(), 300);
+  }, 2000);
+}
+
+function showSuccessMessage(msg) {
+  showMessage(msg, "success");
+}
+function showErrorMessage(msg) {
+  showMessage(msg, "error");
+}
+function showWarningMessage(msg) {
+  showMessage(msg, "warning");
+}
+
+    const absenceSubmit = document.getElementById("absenceSubmit");
+    const giftNameInput = document.getElementById("giftName");
+const giftReceivedSelect = document.getElementById("giftReceived");
+const giftYearSelect = document.getElementById("giftYear");
+const giftMonthSelect = document.getElementById("giftMonth");
+const giftDaySelect = document.getElementById("giftDay");
+const giftStaffSelect = document.getElementById("giftStaff");
+const giftSubmit = document.getElementById("giftSubmit");
+const absenceChildNameInput = document.getElementById("absenceChildName");
+const absenceStaffSelect = document.getElementById("absenceStaff");
+
+    function checkGiftReady() {
+  const nameValid = allNames.includes(giftNameInput.value.trim());
+  const receivedSelected = giftReceivedSelect.value !== "";
+  const yearSelected = giftYearSelect.value !== "";
+  const monthSelected = giftMonthSelect.value !== "";
+  const daySelected = giftDaySelect.value !== "";
+  const staffSelected = giftStaffSelect.value !== "";
+
+  giftSubmit.disabled = !(nameValid && receivedSelected && yearSelected && monthSelected && daySelected && staffSelected);
+}
+
+    giftNameInput.addEventListener("input", checkGiftReady);
+giftReceivedSelect.addEventListener("change", checkGiftReady);
+giftYearSelect.addEventListener("change", checkGiftReady);
+giftMonthSelect.addEventListener("change", checkGiftReady);
+giftDaySelect.addEventListener("change", checkGiftReady);
+giftStaffSelect.addEventListener("change", checkGiftReady);
+
+function checkAbsenceReady() {
+  const nameValid = allNames.includes(absenceChildNameInput.value.trim());
+  const staffSelected = absenceStaffSelect.value !== "";
+  absenceSubmit.disabled = !(nameValid && staffSelected);
+}
+
+absenceChildNameInput.addEventListener("input", checkAbsenceReady);
+absenceStaffSelect.addEventListener("change", checkAbsenceReady);
+checkAbsenceReady();
+
+    absenceSubmit.addEventListener("click", async () => {
+  const name = absenceChildNameInput.value.trim();
+  const year = document.getElementById("absenceYear").value;
+  const rawMonth = document.getElementById("absenceMonth").value;
+const month = normalizeMonth(rawMonth);
+  const date = document.getElementById("absenceDate").value;
+  const staff = absenceStaffSelect.value;
+  const type = document.getElementById("absenceType").value;
+  const notes = document.getElementById("absenceNotes").value.trim();
+
+  absenceSubmit.disabled = true;
+
+  try {
+    const res = await fetch(apiURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "absence",
+        name, year, month, date,
+        serverName: staff, absenceType: type, notes
+      })
+    });
+    const result = await res.json();
+    if(result.success){
+  showSuccessMessage("✅ تم تسجيل الافتقاد بنجاح!");
+  absenceChildNameInput.value = "";
+  absenceStaffSelect.value = "";
+  document.getElementById("absenceNotes").value = "";
+  checkAbsenceReady();
+} else {
+  showErrorMessage("❌ حدث خطأ أثناء التسجيل.");
+}
+  } catch {
+    alert("⚠️ لم يتم الاتصال بالخادم.");
+  } finally {
+    absenceSubmit.disabled = false;
+  }
+});
+
+// --- تفعيل زر الحضور ---
+function checkAttendanceReady() {
+  const nameInput = document.getElementById("nameInput");
+  const attendanceRadios = document.querySelectorAll('input[name="attendance"]');
+  const notebookRadios = document.querySelectorAll('input[name="notebook"]');
+  const attendanceSubmit = document.getElementById("attendanceSubmit");
+
+  const validName = allNames.some(n => n.trim() === nameInput.value.trim());
+  const attendanceChecked = Array.from(attendanceRadios).some(r=>r.checked);
+  const notebookChecked = Array.from(notebookRadios).some(r=>r.checked);
+  attendanceSubmit.disabled = !(validName && attendanceChecked && notebookChecked);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const nameInput = document.getElementById("nameInput");
+  const attendanceRadios = document.querySelectorAll('input[name="attendance"]');
+  const notebookRadios = document.querySelectorAll('input[name="notebook"]');
+  const attendanceSubmit = document.getElementById("attendanceSubmit");
+  const yearSelect = document.getElementById("yearSelect");
+  const monthSelect = document.getElementById("monthSelect");
+  const dateSelect = document.getElementById("dateSelect");
+
+  nameInput.addEventListener("input", checkAttendanceReady);
+  attendanceRadios.forEach(r => r.addEventListener("change", checkAttendanceReady));
+  notebookRadios.forEach(r => r.addEventListener("change", checkAttendanceReady));
+  checkAttendanceReady();
+
+  attendanceSubmit.addEventListener("click", async () => {
+    const name = nameInput.value.trim();
+    if (!name) return alert("⚠️ الاسم مطلوب");
+
+    const attendance = document.querySelector('input[name="attendance"]:checked')?.value;
+    const notebook = document.querySelector('input[name="notebook"]:checked')?.value;
+    if (!attendance || !notebook) return alert("⚠️ يجب اختيار الحضور والنوتة");
+
+    const year = yearSelect.value;
+    const month = normalizeMonth(monthSelect.value);
+    const date = dateSelect.value;
+
+    let interactionPoints = 0;
+    if (attendance === "حضر") interactionPoints += 2;
+    if (notebook === "نعم") interactionPoints += 2;
+
+    attendanceSubmit.textContent = "جارٍ التسجيل...";
+    attendanceSubmit.disabled = true;
+
+    try {
+      const checkRes = await fetch(`${apiURL}?type=checkAttendance&name=${encodeURIComponent(name)}&year=${year}&month=${month}&date=${encodeURIComponent(date)}`);
+      const checkData = await checkRes.json();
+      if (checkData.exists) {
+        alert(`❌ لا يمكن تسجيل الحضور مرة ثانية: ${name}`);
+        return;
+      }
+
+      const res = await fetch(apiURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "attendance", year, month, date, name, attendance, notebook, interactionPoints })
+      });
+
+      const result = await res.json();
+      if (result.success) {
+  showSuccessMessage("✅ تم تسجيل الحضور بنجاح!");
+  nameInput.value = "";
+  attendanceRadios.forEach(r => r.checked = false);
+  notebookRadios.forEach(r => r.checked = false);
+  checkAttendanceReady();
+} else {
+  showErrorMessage("❌ حدث خطأ أثناء التسجيل.");
+}
+    } catch {
+      alert("⚠️ لم يتم الاتصال بالخادم.");
+    } finally {
+      attendanceSubmit.textContent = "إرسال";
+      attendanceSubmit.disabled = false;
+    }
+  });
+});
+    
+// --- تفعيل زر التفاعل ---
+const interactionPoints=document.getElementById("interactionPoints");
+const interactionSubmit=document.getElementById("interactionSubmit");
+
+function checkInteractionReady(){
+  const name=interactionName.value.trim();
+  const points=Number(interactionPoints.value);
+  const validName=allNames.includes(name);
+  const validPoints=!isNaN(points) && points>=0 && points<=5;
+  interactionSubmit.disabled=!(name && validPoints && validName);
+}
+interactionName.addEventListener("input", checkInteractionReady);
+interactionPoints.addEventListener("input", checkInteractionReady);
+checkInteractionReady();
+
+interactionSubmit.addEventListener("click", async () => {
+  const name = interactionName.value.trim();
+  const year = Number(document.getElementById("interactionYearSelect").value);
+  const month = Number(document.getElementById("interactionMonthSelect").value);
+  const date = Number(document.getElementById("interactionDateSelect").value);
+  const points = Number(interactionPoints.value);
+
+  if (!name || !date || !month || !year || isNaN(points) || points < 0 || points > 5) {
+    showWarningMessage("⚠️ تأكد من إدخال الاسم والتاريخ والنقاط بشكل صحيح");
+    return;
+  }
+
+  interactionSubmit.disabled = true;
+
+  try {
+    // ✅ تحقق أولاً هل فيه تفاعل سابق في نفس التاريخ
+    const checkRes = await fetch(`${apiURL}?type=checkInteraction&name=${encodeURIComponent(name)}&year=${year}&month=${month}&date=${date}`);
+    const checkData = await checkRes.json();
+
+    if (checkData.exists && checkData.source === "manual") {
+      showErrorMessage("❌ لا يمكن تسجيل تفاعل عادي مرتين في نفس اليوم لهذا الطفل.");
+      interactionSubmit.disabled = false;
+      return;
+    }
+
+    // ✅ لو مفيش تفاعل يدوي سابق، سجل التفاعل
+    const res = await fetch(apiURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "interaction",
+        name,
+        date,
+        month,
+        year,
+        points
+      })
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      showSuccessMessage("✅ تم تسجيل التفاعل بنجاح!");
+      interactionName.value = "";
+      interactionPoints.value = "";
+      checkInteractionReady();
+    } else {
+      showErrorMessage("❌ حدث خطأ أثناء التسجيل.");
+    }
+  } catch {
+    showWarningMessage("⚠️ لم يتم الاتصال بالخادم.");
+  } finally {
+    interactionSubmit.disabled = false;
+  }
+});
+
+// --- دوال عرض الجداول ---
+function renderListAsTable(container, arr, colName="الاسم"){
+  if(!arr || arr.length===0){ container.innerHTML="لا توجد بيانات"; return; }
+  container.innerHTML = `<table><tr><th>${colName}</th></tr>` + arr.map(x=>`<tr><td>${x}</td></tr>`).join("") + "</table>";
+}
+function renderObjectAsTable(container, obj){
+  if(!obj || Object.keys(obj).length===0){ container.innerHTML="لا توجد بيانات"; return; }
+  container.innerHTML = `<table>` + Object.entries(obj).map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join("") + `</table>`;
+}
+function renderArrayOfObjectsAsTable(container, arr, headers){
+  if(!arr || arr.length===0){ container.innerHTML="لا توجد بيانات"; return; }
+  container.innerHTML = `<table><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr>` +
+    arr.map(row=>`<tr>${headers.map(h=>`<td>${row[h]||""}</td>`).join("")}</tr>`).join("") + `</table>`;
+}
+  // --- أعياد الميلاد ---
+document.getElementById("birthdayShow").addEventListener("click", async () => {
+  const monthIndex = document.getElementById("birthdayMonth").value;
+  const container = document.getElementById("birthdayResult");
+  container.innerHTML = "جاري التحميل...";
+
+  const groupsParam = userGroups.join(","); // ✅ تحويل المجموعات لسلسلة نصية
+
+  try {
+    const res = await fetch(`${apiURL}?type=birthdaysReport&month=${monthIndex}&groups=${groupsParam}`);
+    const data = await res.json();
+
+    if (data.records && data.records.length > 0) {
+      container.innerHTML = `<table><tr><th>اسم الطفل</th><th>اليوم</th><th>الشهر</th><th>السنة</th></tr>` +
+        data.records.map(r => `<tr><td>${r.name}</td><td>${r.day}</td><td>${r.month}</td><td>${r.year}</td></tr>`).join("") +
+        `</table>`;
+    } else {
+      container.innerHTML = "لا توجد بيانات لهذا الشهر";
+    }
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = "❌ لم يتم الاتصال بالخادم.";
+  }
+});
+
+    giftSubmit.addEventListener("click", async () => {
+  const name = giftNameInput.value.trim();
+  const received = giftReceivedSelect.value;
+  const year = giftYearSelect.value;
+  const month = giftMonthSelect.value;
+  const day = giftDaySelect.value;
+  const staff = giftStaffSelect.value;
+
+  giftSubmit.disabled = true;
+
+  try {
+    const res = await fetch(apiURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "gift",
+        name,
+        received,
+        year,
+        month,
+        day,
+        staff
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+  showSuccessMessage("✅ تم تسجيل الهدية بنجاح!");
+  giftNameInput.value = "";
+  checkGiftReady();
+} else {
+  showErrorMessage("❌ حدث خطأ أثناء التسجيل.");
+}
+  } catch {
+    alert("⚠️ لم يتم الاتصال بالخادم.");
+  } finally {
+    giftSubmit.disabled = false;
+  }
+});
+
+// --- تقرير الحضور ---
+document.getElementById("showCount").addEventListener("click", async () => {
+  const year = document.getElementById("reportYear").value;
+  const month = document.getElementById("reportMonth").value;
+  const date = document.getElementById("reportDate").value;
+  const container = document.getElementById("attendanceReportResult");
+  container.innerHTML = "جاري التحميل...";
+
+  const groupsParam = userGroups.join(","); // ✅ أضف ده
+
+  try {
+    const res = await fetch(`${apiURL}?type=attendanceCount&year=${year}&month=${month}&date=${date}&groups=${groupsParam}`);
+    const data = await res.json();
+    container.innerHTML = `عدد الحضور: ${data.count || 0}`;
+  } catch (err) {
+  console.error("❌ Error:", err);
+  container.innerHTML = "❌ حصل خطأ: " + err.message;
+}
+});
+
+document.getElementById("showNames").addEventListener("click", async () => {
+  const year = document.getElementById("reportYear").value;
+  const month = document.getElementById("reportMonth").value;
+  const date = document.getElementById("reportDate").value;
+  const container = document.getElementById("attendanceReportResult");
+  container.innerHTML = "جاري التحميل...";
+
+  const groupsParam = userGroups.join(","); // ✅ تحويل المجموعات لسلسلة نصية
+
+  try {
+    const res = await fetch(`${apiURL}?type=attendanceNames&year=${year}&month=${month}&date=${date}&groups=${groupsParam}`);
+    const data = await res.json();
+    renderListAsTable(container, data.names || [], "اسم الطفل");
+  } catch {
+    container.innerHTML = "❌ لم يتم الاتصال بالخادم.";
+  }
+});
+
+    function convertDriveLinkToImageURL(url) {
+  if (!url) return "";
+  
+  // أي لينك فيه /d/<id>
+  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (match && match[1]) return `https://lh3.googleusercontent.com/d/${match[1]}=s600`;
+
+  // صيغة id=<id>
+  const idMatch = url.match(/id=([a-zA-Z0-9_-]+)/);
+  if (idMatch && idMatch[1]) return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+
+  // صيغة uc?export=view&id=<id>
+  const ucMatch = url.match(/uc\?export=view&id=([a-zA-Z0-9_-]+)/);
+  if (ucMatch && ucMatch[1]) return `https://drive.google.com/uc?export=view&id=${ucMatch[1]}`;
+
+  return url; // fallback
+}
+
+document.getElementById("showChildInfo").addEventListener("click", async () => {
+  const name = document.getElementById("childInfoName").value.trim();
+  const container = document.getElementById("childInfoResult");
+  
+  if (!name) { 
+    container.innerHTML = "❌ اكتب الاسم أولًا"; 
+    return; 
+  }
+
+  container.innerHTML = "⏳ جاري تحميل البيانات...";
+  
+  try {
+    const res = await fetch(`${apiURL}?type=childInfo&name=${encodeURIComponent(name)}`);
+    const data = await res.json();
+
+    if (data && data.records && data.records.length > 0) {
+      const record = data.records[0];
+      let infoHtml = `<div class="child-info-table"><table>`;
+
+      for (const [key, value] of Object.entries(record)) {
+        let displayKey = key;
+        let displayValue = value;
+
+        if (key === "group") {
+          displayKey = "اسم المجموعة";
+        }
+
+        if (key === "الصورة" && value) {
+          const imgSrc = convertDriveLinkToImageURL(value);
+          console.log("🔗 Image URL:", imgSrc);
+          infoHtml += `
+            <tr><th>${displayKey}</th>
+            <td style="width:220px;height:220px;position:relative;text-align:center;">
+              <span id="loadingText" style="color:#777;">⏳ جاري تحميل الصورة...</span>
+              <img id="childPhotoPreview"
+                src="${imgSrc}"
+                alt="صورة الطفل"
+                style="max-width:100%;max-height:100%;border-radius:10px;display:none;">
+            </td></tr>`;
+        } else {
+          infoHtml += `<tr><th>${displayKey}</th><td>${displayValue}</td></tr>`;
+        }
+      }
+
+      infoHtml += `</table></div>`;
+      container.innerHTML = infoHtml; // ✅ أضفنا الـ HTML أولاً
+
+      // ✨ الآن نتعامل مع الصورة بعد ما بقت موجودة في الـ DOM
+      const img = document.getElementById("childPhotoPreview");
+      const loading = document.getElementById("loadingText");
+      if (img && loading) {
+        img.onload = () => {
+          img.style.display = "block";
+          loading.remove();
+        };
+        img.onerror = () => {
+          img.src = "https://dummyimage.com/200x200/cccccc/000000&text=لا+توجد+صورة";
+          img.style.display = "block";
+          loading.remove();
+        };
+      }
+
+    } else {
+      container.innerHTML = "❌ لم يتم العثور على بيانات لهذا الاسم.";
+    }
+
+  } catch (err) {
+    container.innerHTML = "⚠️ حدث خطأ أثناء تحميل البيانات.";
+    console.error(err);
+  }
+});
+
+// --- حضور الطفل في الشهر ---
+document.getElementById("showChildAttendance").addEventListener("click", async () => {
+  const name = document.getElementById("childAttendanceName").value.trim();
+  const year = document.getElementById("childAttendanceYear").value;
+  const month = document.getElementById("childAttendanceMonth").value;
+  const container = document.getElementById("childAttendanceResult");
+  if(!name) return alert("ادخل اسم الطفل");
+  container.innerHTML = "جاري التحميل...";
+  try {
+    const res = await fetch(`${apiURL}?type=childAttendance&name=${encodeURIComponent(name)}&year=${year}&month=${month}`);
+    const data = await res.json();
+    renderArrayOfObjectsAsTable(container, data.records || [], ["date", "attendance", "notebook"]);
+  } catch {
+    container.innerHTML = "❌ لم يتم الاتصال بالخادم.";
+  }
+});
+
+// --- نقاط التفاعل الشهرية ---
+document.getElementById("showInteractionReport").addEventListener("click", async () => {
+  const name = document.getElementById("interactionReportName").value.trim();
+  const year = document.getElementById("interactionReportYear").value;
+  const month = document.getElementById("interactionReportMonth").value;
+  const container = document.getElementById("interactionReportResult");
+  if(!name) return alert("ادخل اسم الطفل");
+  container.innerHTML = "جاري التحميل...";
+  try {
+    const res = await fetch(`${apiURL}?type=interactionReport&name=${encodeURIComponent(name)}&year=${year}&month=${month}`);
+    const data = await res.json();
+    const records = data.records || [];
+renderArrayOfObjectsAsTable(container, records, ["date", "points"]);
+
+const totalPoints = records.reduce((sum, r) => sum + Number(r.points || 0), 0);
+const totalDiv = document.createElement("div");
+totalDiv.style.marginTop = "10px";
+totalDiv.style.fontWeight = "bold";
+totalDiv.textContent = `✅ مجموع النقاط: ${totalPoints}`;
+container.appendChild(totalDiv);
+  } catch {
+    container.innerHTML = "❌ لم يتم الاتصال بالخادم.";
+  }
+});
+
+  function fillFridaysForReport(){
+  const yearSel = document.getElementById("reportYear");
+  const monthSel = document.getElementById("reportMonth");
+  const dateSel = document.getElementById("reportDate");
+  dateSel.innerHTML = "";
+  const year = +yearSel.value;
+  const month = +monthSel.value - 1;
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  for(let d=1; d<=daysInMonth; d++){
+    const date = new Date(year, month, d);
+    if(date.getDay() === 5){ // جمعه
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = `${d}/${month+1}/${year}`;
+      dateSel.appendChild(opt);
+    }
+  }
+}
+
+// ربطها مع تغيير السنة والشهر
+document.getElementById("reportYear").onchange = fillFridaysForReport;
+document.getElementById("reportMonth").onchange = fillFridaysForReport;
+
+window.addEventListener("DOMContentLoaded", () => {
+  fillFridaysForReport();
+});
+
+    document.getElementById("showAbsenceReport").addEventListener("click", async () => {
+  const name = document.getElementById("absenceReportChildName").value.trim();
+  const year = document.getElementById("absenceReportYear").value;
+  const month = document.getElementById("absenceReportMonth").value;
+  const container = document.getElementById("absenceReportResult");
+  
+  if (!name) {
+    alert("ادخل اسم الطفل");
+    return;
+  }
+  
+  container.innerHTML = "جاري التحميل...";
+  
+  try {
+    const res = await fetch(`${apiURL}?type=absenceReport&name=${encodeURIComponent(name)}&year=${year}&month=${month}`);
+    const data = await res.json();
+    if (data.records && data.records.length > 0) {
+      container.innerHTML = `<table>
+        <tr><th>التاريخ</th><th>نوع الافتقاد</th><th>اسم الخادم</th><th>الملاحظات</th></tr>` +
+        data.records.map(r=>`<tr><td>${r.date}/${r.month}/${r.year}</td><td>${r.absenceType}</td><td>${r.staff}</td><td>${r.notes}</td></tr>`).join("") +
+        `</table>`;
+    } else {
+      container.innerHTML = "لا توجد بيانات لهذا الطفل في هذا الشهر";
+    }
+  } catch {
+    container.innerHTML = "❌ لم يتم الاتصال بالخادم.";
+  }
+});
+
+    function fillAbsenceDates() {
+  const yearSel = document.getElementById("absenceYear");
+  const monthSel = document.getElementById("absenceMonth");
+  const dateSel = document.getElementById("absenceDate");
+  dateSel.innerHTML = "";
+  const year = +yearSel.value;
+  const month = +monthSel.value - 1;
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  for(let d=1; d<=daysInMonth; d++){
+    const opt = document.createElement("option");
+    opt.value = d;
+    opt.textContent = `${d}/${month+1}/${year}`;
+    dateSel.appendChild(opt);
+  }
+}
+
+// استدعاء عند تغيير السنة أو الشهر
+document.getElementById("absenceYear").onchange = fillAbsenceDates;
+document.getElementById("absenceMonth").onchange = fillAbsenceDates;
+
+// استدعاء عند تحميل الصفحة
+fillAbsenceDates();
+
+    async function showAbsenceReport() {
+  const name = document.getElementById("absenceReportName").value.trim();
+  const year = document.getElementById("absenceReportYear").value;
+  const month = document.getElementById("absenceReportMonth").value;
+
+  if (!name || !year || !month) {
+    alert("من فضلك اختر الاسم والسنة والشهر أولاً");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${SCRIPT_URL}?type=absenceReport&name=${encodeURIComponent(name)}&year=${year}&month=${month}`);
+    const data = await response.json();
+
+    console.log("🔍 absence report data:", data.records); // عشان تشوف شكل البيانات في console
+
+    const tableBody = document.getElementById("absenceReportTableBody");
+    tableBody.innerHTML = "";
+
+    if (!data.records || data.records.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="4">لا توجد بيانات افتقاد لهذا الطفل في هذا الشهر</td></tr>`;
+      return;
+    }
+
+    // عرض كل سجل افتقاد
+    data.records.forEach(r => {
+      // لو الأعمدة عندك في الشيت مرتبة كالتالي:
+      // الاسم | السنة | الشهر | التاريخ | الحضور | جاب النوتة | التفاعل | آخر تعديل | نوع الافتقاد | اسم الخادم | الملاحظات
+      // يبقى المفاتيح هتكون بالشكل ده:
+      const yearVal = r.year || r[1] || "";
+      const monthVal = r.month || r[2] || "";
+      const dateVal = r.date || r[3] || "";
+      const absenceType = r.absenceType || r["نوع الافتقاد"] || r[8] || "";
+      const staff = r.staff || r["اسم الخادم"] || r[9] || "";
+      const notes = r.notes || r["الملاحظات الخاصة بالافتقاد"] || r[10] || "";
+
+      const row = `
+        <tr>
+          <td>${dateVal}/${monthVal}/${yearVal}</td>
+          <td>${absenceType}</td>
+          <td>${staff}</td>
+          <td>${notes}</td>
+        </tr>
+      `;
+      tableBody.insertAdjacentHTML("beforeend", row);
+    });
+
+  } catch (err) {
+    console.error("❌ خطأ أثناء تحميل تقرير الافتقاد:", err);
+    alert("حدث خطأ أثناء تحميل البيانات، حاول مرة أخرى.");
+  }
+}
+
+    document.getElementById("saveChildBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("saveChildBtn");
+  const resultDiv = document.getElementById("addEditResult");
+  btn.disabled = true;
+  resultDiv.textContent = "⏳ جاري الحفظ...";
+
+  const data = {
+  type: "addEditChild",
+  name: document.getElementById("ae_name").value.trim(),
+  group: document.getElementById("ae_group").value.trim(),
+  day: document.getElementById("ae_day").value,
+  month: document.getElementById("ae_month").value,
+  year: document.getElementById("ae_year").value,
+  school: document.getElementById("ae_school").value.trim(),
+  schoolYear: document.getElementById("ae_schoolYear").value.trim(),
+  confession: document.getElementById("ae_confession").value.trim(),
+  area: document.getElementById("ae_area").value.trim(),
+  street: document.getElementById("ae_street").value.trim(),
+  near: document.getElementById("ae_near").value.trim(),
+  homeNum: document.getElementById("ae_homeNum").value.trim(),
+  homePhone: document.getElementById("ae_homePhone").value.trim(),
+  fatherPhone: document.getElementById("ae_fatherPhone").value.trim(),
+  fatherJob: document.getElementById("ae_fatherJob").value.trim(),
+  motherPhone: document.getElementById("ae_motherPhone").value.trim(),
+  motherJob: document.getElementById("ae_motherJob").value.trim(),
+  photo: document.getElementById("ae_photo").value.trim(),
+
+  // الإخوة
+  brother1: document.getElementById("ae_brother1").value.trim(),
+  brother1Age: document.getElementById("ae_brother1Age").value,
+  brother2: document.getElementById("ae_brother2").value.trim(),
+  brother2Age: document.getElementById("ae_brother2Age").value,
+  brother3: document.getElementById("ae_brother3").value.trim(),
+  brother3Age: document.getElementById("ae_brother3Age").value,
+  brother4: document.getElementById("ae_brother4").value.trim(),
+  brother4Age: document.getElementById("ae_brother4Age").value,
+  brother5: document.getElementById("ae_brother5").value.trim(),
+  brother5Age: document.getElementById("ae_brother5Age").value,
+
+  // السمات
+  loveLangs: document.getElementById("ae_loveLangs").value.trim(),
+  traits: document.getElementById("ae_traits").value.trim(),
+  talents: document.getElementById("ae_talents").value.trim(),
+  bestWays: document.getElementById("ae_bestWays").value.trim(),
+  problems: document.getElementById("ae_problems").value.trim()
+};
+
+  try {
+    const res = await fetch(apiURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    if(result.success){
+  alert("✅ تم حفظ البيانات بنجاح!");
+  clearAddEditForm();
+} else {
+      resultDiv.textContent = "⚠️ " + (result.message || "حدث خطأ أثناء الحفظ");
+    }
+  } catch (err) {
+    resultDiv.textContent = "⚠️ حدث خطأ أثناء الاتصال بالخادم";
+    console.error(err);
+  }
+  btn.disabled = false;
+});
+
+   // 🟢 تسجيل الحضور
+fillYearSelect(document.getElementById("ae_att_year"));
+fillMonthSelect(document.getElementById("ae_att_month"));
+fillFridays(
+  document.getElementById("ae_att_year"),
+  document.getElementById("ae_att_month"),
+  document.getElementById("ae_att_day")
+);
+document.getElementById("ae_att_year").onchange = () => 
+  fillFridays(document.getElementById("ae_att_year"), document.getElementById("ae_att_month"), document.getElementById("ae_att_day"));
+document.getElementById("ae_att_month").onchange = () => 
+  fillFridays(document.getElementById("ae_att_year"), document.getElementById("ae_att_month"), document.getElementById("ae_att_day"));
+
+
+// 🟣 تسجيل التفاعل (الجمعة فقط)
+fillYearSelect(document.getElementById("ae_interact_year"));
+fillMonthSelect(document.getElementById("ae_interact_month"));
+fillFridays(
+  document.getElementById("ae_interact_year"),
+  document.getElementById("ae_interact_month"),
+  document.getElementById("ae_interact_day")
+);
+document.getElementById("ae_interact_year").onchange = () => 
+  fillFridays(document.getElementById("ae_interact_year"), document.getElementById("ae_interact_month"), document.getElementById("ae_interact_day"));
+document.getElementById("ae_interact_month").onchange = () => 
+  fillFridays(document.getElementById("ae_interact_year"), document.getElementById("ae_interact_month"), document.getElementById("ae_interact_day"));
+
+
+// 🟠 تسجيل الافتقاد (كل الأيام)
+fillYearSelect(document.getElementById("ae_abs_year"));
+fillMonthSelect(document.getElementById("ae_abs_month"));
+fillAllDays(
+  document.getElementById("ae_abs_year"),
+  document.getElementById("ae_abs_month"),
+  document.getElementById("ae_abs_day")
+);
+document.getElementById("ae_abs_year").onchange = () =>
+  fillAllDays(document.getElementById("ae_abs_year"), document.getElementById("ae_abs_month"), document.getElementById("ae_abs_day"));
+document.getElementById("ae_abs_month").onchange = () =>
+  fillAllDays(document.getElementById("ae_abs_year"), document.getElementById("ae_abs_month"), document.getElementById("ae_abs_day"));
+
+    // تعبئة السنوات والشهور للتفاعل
+fillYearSelect(document.getElementById("interactionYearSelect"));
+fillMonthSelect(document.getElementById("interactionMonthSelect"));
+
+// تعبئة أيام الجمعة فقط
+fillFridays(
+  document.getElementById("interactionYearSelect"),
+  document.getElementById("interactionMonthSelect"),
+  document.getElementById("interactionDateSelect")
+);
+
+// تحديث الأيام عند تغيير السنة أو الشهر
+document.getElementById("interactionYearSelect").onchange = () => {
+  fillFridays(
+    document.getElementById("interactionYearSelect"),
+    document.getElementById("interactionMonthSelect"),
+    document.getElementById("interactionDateSelect")
+  );
+};
+document.getElementById("interactionMonthSelect").onchange = () => {
+  fillFridays(
+    document.getElementById("interactionYearSelect"),
+    document.getElementById("interactionMonthSelect"),
+    document.getElementById("interactionDateSelect")
+  );
+};
+
+    const aeYear = document.getElementById("ae_year");
+const aeMonth = document.getElementById("ae_month");
+const aeDay = document.getElementById("ae_day");
+
+// تعبئة السنوات من 2010 لغاية السنة الحالية
+fillYearSelect(aeYear, 2010, currentYear);
+
+// تعبئة الشهور
+fillMonthSelect(aeMonth);
+
+// تعبئة الأيام حسب السنة والشهر
+fillAllDays(aeYear, aeMonth, aeDay);
+
+// تحديث الأيام عند تغيير السنة أو الشهر
+aeYear.onchange = () => fillAllDays(aeYear, aeMonth, aeDay);
+aeMonth.onchange = () => fillAllDays(aeYear, aeMonth, aeDay);
+
+    function clearAddEditForm(){
+  const fields = [
+    "ae_name", "ae_group", "ae_school", "ae_schoolYear", "ae_confession", "ae_area",
+    "ae_street", "ae_near", "ae_homeNum", "ae_homePhone", "ae_fatherPhone", "ae_fatherJob",
+    "ae_motherPhone", "ae_motherJob", "ae_brother1", "ae_brother1Age", "ae_brother2", "ae_brother2Age",
+    "ae_brother3", "ae_brother3Age", "ae_brother4", "ae_brother4Age", "ae_brother5", "ae_brother5Age",
+    "ae_loveLangs", "ae_traits", "ae_talents", "ae_bestWays", "ae_problems", "ae_photo"
+  ];
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+
+  // إعادة تعبئة الأيام حسب السنة والشهر الحاليين
+  fillAllDays(
+    document.getElementById("ae_year"),
+    document.getElementById("ae_month"),
+    document.getElementById("ae_day")
+  );
+}
+
+    document.getElementById("ae_year").onchange = () => {
+  fillAllDays(document.getElementById("ae_year"), document.getElementById("ae_month"), document.getElementById("ae_day"));
+};
+document.getElementById("ae_month").onchange = () => {
+  fillAllDays(document.getElementById("ae_year"), document.getElementById("ae_month"), document.getElementById("ae_day"));
+};
+fillAllDays(document.getElementById("ae_year"), document.getElementById("ae_month"), document.getElementById("ae_day"));
+
+   function fillAllDays(yearSel, monthSel, dateSel){
+  if (!yearSel || !monthSel || !dateSel) return;
+  dateSel.innerHTML = "";
+  const year = +yearSel.value;
+  const month = +monthSel.value - 1;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for(let d = 1; d <= daysInMonth; d++){
+    const opt = document.createElement("option");
+    opt.value = d;
+    opt.textContent = `${d}/${month + 1}/${year}`;
+    dateSel.appendChild(opt);
+  }
+}
+
+    fillYearSelect(document.getElementById("giftYear"));
+fillMonthSelect(document.getElementById("giftMonth"));
+fillAllDays(document.getElementById("giftYear"), document.getElementById("giftMonth"), document.getElementById("giftDay"));
+
+    document.getElementById("giftYear").onchange = () => {
+  fillAllDays(document.getElementById("giftYear"), document.getElementById("giftMonth"), document.getElementById("giftDay"));
+};
+document.getElementById("giftMonth").onchange = () => {
+  fillAllDays(document.getElementById("giftYear"), document.getElementById("giftMonth"), document.getElementById("giftDay"));
+};
+setupSuggestions(document.getElementById("giftName"), document.getElementById("giftSuggestions"));
+
+    document.getElementById("showGiftReport").addEventListener("click", async () => {
+  const name = document.getElementById("giftReportName").value.trim();
+  const year = document.getElementById("giftReportYear").value;
+  const resultDiv = document.getElementById("giftReportResult");
+
+  if (!name || !year) return alert("❗ لازم تختار الاسم والسنة");
+
+  resultDiv.innerHTML = "⏳ جاري التحميل...";
+
+  try {
+    const res = await fetch(`${apiURL}?type=giftReport&name=${encodeURIComponent(name)}&year=${year}`);
+    const data = await res.json();
+
+    if (!data.records || data.records.length === 0) {
+      resultDiv.innerHTML = "❌ لا يوجد هدايا مسجلة لهذا الطفل في هذه السنة.";
+      return;
+    }
+
+    resultDiv.innerHTML = "<ul>" + data.records.map(r =>
+      `<li>📅 ${r.day}/${r.month}/${r.year} - 🎁 بواسطة: ${r.staff}</li>`
+    ).join("") + "</ul>";
+  } catch {
+    resultDiv.innerHTML = "⚠️ حدث خطأ أثناء تحميل التقرير.";
+  }
+});
+
+    window.addEventListener("DOMContentLoaded", () => {
+  const loginBtn = document.getElementById("loginBtn");
+  if (!loginBtn) return; // حماية لو الزر مش موجود
+
+  loginBtn.addEventListener("click", async () => {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const errorDiv = document.getElementById("loginError");
+
+    if (!username || !password) {
+      errorDiv.textContent = "❗ أدخل اسم المستخدم وكلمة المرور";
+      errorDiv.style.display = "block";
+      return;
+    }
+
+    errorDiv.textContent = "⏳ جاري التحقق...";
+    errorDiv.style.display = "block";
+
+    try {
+
+      const res = await fetch(
+        `${apiURL}?type=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+      );
+      const data = await res.json();
+
+      if (!data.success) {
+        errorDiv.textContent = "❌ اسم المستخدم أو كلمة المرور غير صحيحة";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      // ✅ تسجيل الدخول ناجح
+      userGroups = (data.groups || []).map(g => g.trim());
+      await loadNames(userGroups);
+      initAttendance();
+
+      errorDiv.style.display = "none";
+      const login = document.getElementById("loginSection");
+      const main = document.getElementById("mainContent");
+      login.style.opacity = "0";
+      login.style.transition = "opacity 0.5s";
+      setTimeout(() => {
+        login.style.display = "none";
+        main.style.display = "block";
+      }, 500);
+
+    } catch (err) {
+      console.error(err);
+      errorDiv.textContent = "⚠️ حدث خطأ أثناء الاتصال بالخادم";
+      errorDiv.style.display = "block";
+    }
+  });
+});
+
+    document.getElementById("editChildBtn").addEventListener("click", async () => {
+  const name = document.getElementById("editChildName").value.trim();
+  const field = document.getElementById("editField").value;
+  const value = document.getElementById("editNewValue").value.trim();
+
+  if (!name || !field || !value) {
+    alert("❗ يرجى إدخال جميع البيانات");
+    return;
+  }
+
+  try {
+    const res = await fetch(apiURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "editField",
+        name,
+        field,
+        value
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+      alert("✅ تم تعديل البيانات بنجاح!");
+      document.getElementById("editNewValue").value = "";
+    } else {
+      alert("❌ حدث خطأ أثناء التعديل.");
+    }
+  } catch {
+    alert("⚠️ لم يتم الاتصال بالخادم.");
+  }
+});
+
+    document.getElementById("showStaffReport").addEventListener("click", async () => {
+  const staff = document.getElementById("staffReportName").value.trim();
+  const year = document.getElementById("staffReportYear").value;
+  const month = document.getElementById("staffReportMonth").value;
+  const container = document.getElementById("staffReportResult");
+
+  if (!staff || !year || !month) {
+    container.innerHTML = "❌ اختر كل البيانات أولًا";
+    return;
+  }
+
+  container.innerHTML = "⏳ جاري تحميل التقرير...";
+  try {
+    const res = await fetch(`${apiURL}?type=ServantabsenceReport&year=${year}&month=${month}&staff=${encodeURIComponent(staff)}`);
+    const data = await res.json();
+
+    if (data.records && data.records.length > 0) {
+      let html = `<p>عدد الافتقادات: ${data.records.length}</p>`;
+      html += `<table><tr><th>التاريخ</th><th>الطفل</th><th>النوع</th><th>الملاحظات</th></tr>`;
+      data.records.forEach(r => {
+        html += `<tr><td>${r.date}/${r.month}/${r.year}</td><td>${r.name}</td><td>${r.absenceType}</td><td>${r.notes || "-"}</td></tr>`;
+      });
+      html += `</table>`;
+      container.innerHTML = html;
+    } else {
+      container.innerHTML = "❌ لا يوجد افتقادات لهذا الخادم في هذا الشهر.";
+    }
+  } catch (err) {
+    container.innerHTML = "⚠️ حدث خطأ أثناء تحميل التقرير.";
+    console.error(err);
+  }
+});
+
+    document.getElementById("saveMinus").addEventListener("click", async () => {
+  const minusNameInput = document.getElementById("minusName").value.trim();
+  const minusYearValue = document.getElementById("minusYear").value;
+  const minusMonthValue = document.getElementById("minusMonth").value;
+  const minusDayValue = document.getElementById("minusDate").value;
+  const minusAmount = document.getElementById("minusValue").value.trim();
+  const minusStatusBox = document.getElementById("minusStatus");
+
+  if (!minusNameInput || !minusYearValue || !minusMonthValue || !minusDayValue || !minusAmount) {
+    minusStatusBox.textContent = "⚠️ من فضلك املأ كل الخانات";
+    return;
+  }
+
+  minusStatusBox.textContent = "⏳ جاري الحفظ...";
+
+  try {
+  const res = await fetch(apiURL, {
+    method: "POST",
+    body: JSON.stringify({
+      type: "minus",
+      name: minusNameInput,
+      year: minusYearValue,
+      month: minusMonthValue,
+      date: minusDayValue,
+      minus: minusAmount
+    })
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    minusStatusBox.textContent = data.message || "✅ تم حفظ الـ Minus بنجاح";
+    document.getElementById("minusName").value = "";
+    document.getElementById("minusValue").value = "";
+    checkMinusReady();
+    setTimeout(() => {
+      minusStatusBox.textContent = "";
+    }, 3000);
+  } else {
+    minusStatusBox.textContent = data.error || "⚠️ حدث خطأ أثناء الحفظ";
+  }
+
+} catch (err) {
+  minusStatusBox.textContent = "❌ فشل الاتصال بالسيرفر";
+  console.error(err);
+}
+});
+
+    const minusNameEl = document.getElementById("minusName");
+const minusYearEl = document.getElementById("minusYear");
+const minusMonthEl = document.getElementById("minusMonth");
+const minusDateEl = document.getElementById("minusDate");
+const minusValueEl = document.getElementById("minusValue");
+const saveMinusBtn = document.getElementById("saveMinus");
+
+function checkMinusReady() {
+  const ready =
+    minusNameEl.value.trim() &&
+    minusYearEl.value &&
+    minusMonthEl.value &&
+    minusDateEl.value &&
+    minusValueEl.value.trim();
+
+  saveMinusBtn.disabled = !ready;
+}
+
+// ✅ شغّل التحقق عند كل تغيير
+[minusNameEl, minusYearEl, minusMonthEl, minusDateEl, minusValueEl].forEach(el => {
+  el.addEventListener("input", checkMinusReady);
+  el.addEventListener("change", checkMinusReady);
+});
+
+    document.getElementById("galleryCheckBtn").addEventListener("click", async () => {
+  const name = document.getElementById("galleryChildName").value.trim();
+  if (!name) return alert("⚠️ من فضلك اكتب اسم الطفل");
+
+  const res = await fetch(`${apiURL}?type=galleryPoints&name=${encodeURIComponent(name)}`);
+  const data = await res.json();
+
+  const earned = data.earned || 0;
+  const used = data.used || 0;
+  const minus = data.minus || 0;
+  const net = earned - used - minus;
+
+  document.getElementById("galleryResult").innerHTML = `
+    🟢 النقاط المكتسبة: ${earned}<br>
+    🎁 النقاط المستخدمة: ${used}<br>
+    ❌ نقاط Minus: ${minus}<br>
+    <strong>💡 المحصلة النهائية: ${net}</strong>
+  `;
+
+  document.getElementById("galleryResult").dataset.net = net;
+});
+
+    document.querySelectorAll("#giftOptions input[type='checkbox']").forEach(cb => {
+  cb.addEventListener("change", () => {
+    const selected = Array.from(document.querySelectorAll("#giftOptions input[type='checkbox']:checked"));
+    const total = selected.reduce((sum, el) => sum + Number(el.dataset.points), 0);
+    document.getElementById("giftTotal").textContent = `إجمالي نقاط الهدايا: ${total}`;
+
+    const net = Number(document.getElementById("galleryResult").dataset.net || 0);
+    document.getElementById("gallerySubmitBtn").disabled = total > net;
+  });
+});
+
+    document.getElementById("gallerySubmitBtn").addEventListener("click", async () => {
+  const name = document.getElementById("galleryChildName").value.trim();
+  const month = document.getElementById("galleryMonthSelect").value;
+  const year = document.getElementById("galleryYearSelect").value;
+
+  const gifts = Array.from(document.querySelectorAll(".giftQty"))
+    .filter(el => Number(el.value) > 0)
+    .map(el => {
+      const card = el.closest(".gift-card");
+      const giftName = card.querySelector("h4")?.textContent?.trim();
+      return `${el.value} × ${giftName}`;
+    });
+
+  const res = await fetch(apiURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      type: "feriaGifts",
+      name,
+      year,
+      month,
+      gifts
+    })
+  });
+
+  const result = await res.json();
+ if (result.success) {
+  alert("✅ تم تسجيل الهدايا بنجاح!");
+
+  // تفريغ الاسم
+  document.getElementById("galleryChildName").value = "";
+
+  // تصفير كميات الهدايا
+  document.querySelectorAll(".giftQty").forEach(input => input.value = 0);
+
+  // تصفير إجمالي النقاط
+  document.getElementById("giftTotal").textContent = "إجمالي نقاط الهدايا: 0";
+
+  // إخفاء تفاصيل النقاط
+  document.getElementById("galleryResult").style.display = "none";
+} else {
+    alert("❌ حدث خطأ أثناء التسجيل.");
+  }
+});
+
+document.getElementById("galleryChildName").addEventListener("input", async (e) => {
+  const galleryTypedName = e.target.value.trim();
+  const gallerySuggestionBox = document.getElementById("gallerySuggestions");
+  gallerySuggestionBox.innerHTML = "";
+  gallerySuggestionBox.style.display = "none";
+
+  if (galleryTypedName.length < 2) return;
+
+  const galleryMatchedNames = galleryNames.filter(n => n.includes(galleryTypedName));
+
+  if (galleryMatchedNames.length === 0) return;
+
+  galleryMatchedNames.forEach(name => {
+    const div = document.createElement("div");
+    div.textContent = name;
+    div.onclick = () => {
+      document.getElementById("galleryChildName").value = name;
+      gallerySuggestionBox.style.display = "none";
+    };
+    gallerySuggestionBox.appendChild(div);
+  });
+
+  gallerySuggestionBox.style.display = "block";
+});
+
+document.querySelectorAll(".giftQty").forEach(input => {
+  input.addEventListener("input", () => {
+    const usedNow = Array.from(document.querySelectorAll(".giftQty"))
+      .reduce((sum, el) => sum + (Number(el.value) * Number(el.dataset.points)), 0);
+
+    document.getElementById("giftTotal").textContent = `إجمالي نقاط الهدايا: ${usedNow}`;
+
+    const available = Number(document.getElementById("galleryResult").dataset.net || 0);
+    document.getElementById("gallerySubmitBtn").disabled = usedNow > available;
+  });
+});
+    document.getElementById("galleryTab").addEventListener("click", async () => {
+  activateTab("galleryTab", "gallerySection");
+
+  if (galleryNames.length === 0) {
+    const res = await fetch(`${apiURL}?type=names&groups=${userGroups.join(",")}`);
+    const data = await res.json();
+    galleryNames = data.names || [];
+  }
+});
+    document.querySelectorAll(".gift-card").forEach(card => {
+  const input = card.querySelector(".giftQty");
+  const plus = card.querySelector(".gift-plus");
+  const minus = card.querySelector(".gift-minus");
+
+  plus.addEventListener("click", () => {
+    input.value = Number(input.value) + 1;
+    input.dispatchEvent(new Event("input")); // علشان يتحدث الإجمالي
+  });
+
+  minus.addEventListener("click", () => {
+    if (Number(input.value) > 0) {
+      input.value = Number(input.value) - 1;
+      input.dispatchEvent(new Event("input"));
+    }
+  });
+});
+
+    document.getElementById("galleryGiftSearchName").addEventListener("input", (e) => {
+  const typed = e.target.value.trim();
+  const box = document.getElementById("galleryGiftSearchSuggestions");
+  box.innerHTML = "";
+  box.style.display = "none";
+
+  if (typed.length < 2) return;
+
+  const matched = galleryNames.filter(n => n.includes(typed));
+  if (matched.length === 0) return;
+
+  matched.forEach(name => {
+    const div = document.createElement("div");
+    div.textContent = name;
+    div.onclick = () => {
+      document.getElementById("galleryGiftSearchName").value = name;
+      box.style.display = "none";
+    };
+    box.appendChild(div);
+  });
+
+  box.style.display = "block";
+});
+
+document.getElementById("galleryGiftSearchBtn").addEventListener("click", async () => {
+  const name = document.getElementById("galleryGiftSearchName").value.trim();
+  if (!name) return alert("⚠️ من فضلك اكتب اسم الطفل");
+
+  const res = await fetch(`${apiURL}?type=galleryGiftHistory&name=${encodeURIComponent(name)}`);
+  const data = await res.json();
+
+  const container = document.getElementById("galleryGiftSearchResult");
+  container.innerHTML = "";
+
+  if (!data.records || data.records.length === 0) {
+    container.innerHTML = "❌ لا توجد بيانات لهذا الطفل.";
+    return;
+  }
+
+  const table = document.createElement("table");
+  table.innerHTML = `
+    <tr>
+      <th>السنة</th>
+      <th>الشهر</th>
+      <th>الهدايا المختارة</th>
+      <th>تاريخ التسجيل</th>
+    </tr>
+  `;
+
+  data.records.forEach(r => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.year}</td>
+      <td>${r.month}</td>
+      <td>${r.gifts}</td>
+      <td>${r.date}</td>
+    `;
+    table.appendChild(tr);
+  });
+
+  container.appendChild(table);
+});
+
+    function normalizeMonth(month) {
+  const map = {
+    "يناير": "1", "فبراير": "2", "مارس": "3", "أبريل": "4", "مايو": "5",
+    "يونيو": "6", "يوليو": "7", "أغسطس": "8", "سبتمبر": "9", "أكتوبر": "10",
+    "اكتوبر": "10", // تصحيح الخطأ
+    "نوفمبر": "11", "ديسمبر": "12"
+  };
+  return map[month] || month; // لو مكتوب رقم، يرجعه زي ما هو
+}
+
+    document.getElementById("ae_interact_btn").addEventListener("click", async () => {
+  const btn = document.getElementById("ae_interact_btn");
+  const nameInput = document.getElementById("ae_interact_name");
+  const year = document.getElementById("ae_interact_year").value;
+  const month = document.getElementById("ae_interact_month").value;
+  const date = document.getElementById("ae_interact_day").value;
+  const pointsInput = document.getElementById("ae_interact_points");
+
+  const name = nameInput.value.trim();
+  const points = pointsInput.value;
+
+  if (!name || !year || !month || !date) {
+    return alert("⚠️ لازم تدخل الاسم والتاريخ كامل");
+  }
+
+  btn.textContent = "جارٍ الحفظ...";
+  btn.disabled = true;
+
+  try {
+    // check الأول
+    const checkRes = await fetch(`${apiURL}?type=checkInteraction&name=${encodeURIComponent(name)}&year=${year}&month=${month}&date=${date}`);
+    const checkData = await checkRes.json();
+
+    const actionType = checkData.exists ? "updateInteraction" : "interaction";
+
+    const res = await fetch(apiURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: actionType, name, year, month, date, points })
+    });
+
+    const result = await res.json();
+    if (result.success) {
+  showSuccessMessage(checkData.exists ? "✅ تم تعديل التفاعل" : "✅ تم إضافة التفاعل");
+      nameInput.value = "";
+      pointsInput.value = "";
+} else {
+  showErrorMessage("❌ حصل خطأ أثناء الحفظ");
+}
+
+  } catch (err) {
+    alert("⚠️ لم يتم الاتصال بالخادم");
+  } finally {
+    btn.textContent = "حفظ التفاعل"; // يرجع النص الأصلي
+    btn.disabled = false;
+  }
+});
+
+// تجيب كل الأسماء حسب مجموعات المستخدم
+async function fetchAllNames(groups) {
+  const res = await fetch(`${apiURL}?type=names&groups=${encodeURIComponent((groups || []).join(","))}`);
+  const data = await res.json();
+  return data.names || data || [];
+}
+
+// تجيب محصلة النقاط النهائية للطفل (earned - used - minus)
+async function fetchNetPoints(name) {
+  const res = await fetch(`${apiURL}?type=galleryPoints&name=${encodeURIComponent(name)}`);
+  const data = await res.json();
+  const earned = Number(data.earned || 0);
+  const used   = Number(data.used   || 0);
+  const minus  = Number(data.minus  || 0);
+  return earned - used - minus;
+}
+
+// تجيب مجموعة الطفل
+async function fetchChildGroup(name) {
+  const res = await fetch(`${apiURL}?type=childInfo&name=${encodeURIComponent(name)}`);
+  const data = await res.json();
+  const record = (data && data.records && data.records[0]) || {};
+  return record.group || record["اسم المجموعة"] || "-";
+}
+
+// تجميع كل الدرجات مع أسماء الأطفال والمجموعات
+// 🟢 خريطة أسماء الهدايا → قيم النقاط
+const giftPointsMap = {
+  "لعبة": 4,
+  "كراسة رسم": 3,
+  "ألوان": 2,
+  "ستيكرات": 1,
+  "كتاب صغير": 5,
+};
+
+async function buildAllScoresReportFromSheet(groups) {
+  // 🟢 هات كل الأسماء
+  const names = await fetchAllNames(groups);
+
+  // 🟢 هات المحصلة النهائية لكل طفل من نفس الـ API بتاع المعرض
+  // 🟢 هات المحصلة النهائية لكل طفل بالتوازي
+const results = await Promise.all(
+  names.map(async name => {
+    const net = await fetchNetPoints(name);
+    return { name, net };
+  })
+);
+
+// 🟢 استبعد اللي درجتهم صفر
+const filteredResults = results.filter(r => r.net !== 0);
+
+  // 🟢 اجمع الأطفال حسب الدرجة
+  const scoreMap = new Map();
+  results.forEach(r => {
+    if (!scoreMap.has(r.net)) scoreMap.set(r.net, []);
+    scoreMap.get(r.net).push(r);
+  });
+
+  // 🟢 رتب الدرجات تصاعدي
+  const sorted = Array.from(scoreMap.entries()).sort((a,b)=>a[0]-b[0]);
+
+  // 🟢 بناء جدول HTML
+  const tableHtml = `
+    <table>
+      <tr><th>الدرجة</th><th>عدد الأطفال</th><th>الأسماء</th></tr>
+      ${sorted.map(([score, kids]) => {
+        kids.sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+        return `
+          <tr>
+            <td>${score}</td>
+            <td>${kids.length}</td>
+            <td>${kids.map(k => k.name).join("<br>")}</td>
+          </tr>
+        `;
+      }).join("")}
+    </table>
+  `;
+
+  return { html: tableHtml, list: sorted };
+}
+    
+// تفعيل زر "عرض كل الدرجات"
+document.getElementById("showAllScoresBtn").addEventListener("click", async () => {
+  const box = document.getElementById("allScoresResult");
+  box.innerHTML = "⏳ جاري التحميل...";
+
+  try {
+    const { html } = await buildAllScoresReportFromSheet(userGroups);
+    box.innerHTML = html;
+  } catch (err) {
+    console.error(err);
+    box.innerHTML = "❌ حصل خطأ أثناء تحميل التقرير";
+  }
+});
+</script>
+</body>
+</html>
